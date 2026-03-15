@@ -23,8 +23,7 @@ app.add_middleware(
 CLASSES = ["notumor", "glioma", "meningioma", "pituitary"]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# The model file is located one directory above the backend directory
-MODEL_PATH = os.path.join(BASE_DIR, "..", "best_brain_tumor_resnet18_finetuned (1).pth")
+MODEL_PATH = os.path.join(BASE_DIR, "best_model.pth")
 
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

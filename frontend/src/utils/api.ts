@@ -11,8 +11,8 @@ export const analyzeScanImage = async (file: File): Promise<PredictionResult> =>
   formData.append("file", file);
 
   try {
-    // Determine the API URL based on environment (local vs Vercel)
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api/predict';
+    // Determine the API URL based on environment
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://brain-tumor-predictior.onrender.com/api/predict';
     
     // Set a timeout for the fetch request
     const controller = new AbortController();

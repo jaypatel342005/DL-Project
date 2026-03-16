@@ -73,7 +73,26 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result, onShowDetails })
           </div>
         </div>
         <button 
-          onClick={() => window.print()}
+          onClick={() => {
+            const reportContent = `BRAIN TUMOR ANALYSIS REPORT\n` +
+              `===========================\n\n` +
+              `Date: ${new Date().toLocaleString()}\n\n` +
+              `Prediction: ${activeResult.label}\n` +
+              `Confidence values:\n` +
+              (result.confidences ? Object.entries(result.confidences).map(([k, v]) => `- ${k}: ${v}%`).join('\n') : "N/A\n") +
+              `\n\nAssessment:\n${activeResult.description}\n\n` +
+              `Disclaimer: AI predictions are for informational purposes. Always consult a qualified radiologist.`;
+
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Diagnosis_Report_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }}
           className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-b from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-slate-200 rounded-xl text-sm font-semibold transition-all border border-slate-600 shadow-lg hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-95"
         >
           <Download className="w-4 h-4" /> Download Report

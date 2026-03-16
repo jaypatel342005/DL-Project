@@ -6,7 +6,7 @@ import {
   UploadCloud, CheckCircle2, AlertCircle, Loader2, Brain, 
   Activity, FileWarning, Microscope, Database, Network, 
   ShieldAlert, Info, FileText, ChevronRight, AlertTriangle, Download,
-  Menu, X
+  Menu, X, Github, Linkedin, ExternalLink, Heart
 } from "lucide-react";
 
 import { analyzeScanImage, PredictionResult } from "@/utils/api";
@@ -561,9 +561,33 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto py-6 border-t border-white/5 text-center text-slate-600 text-xs">
-        <p>&copy; {new Date().getFullYear()} NeuralScan.AI Research Project. All rights reserved.</p>
-        <p className="mt-1">Powered by PyTorch, FastAPI, Next.js, and Tailwind CSS.</p>
+      <footer className="mt-auto py-8 border-t border-white/5 flex flex-col items-center gap-4 relative z-10">
+        <div className="flex items-center gap-4">
+          <a href="https://github.com/jaypatel342005" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-all duration-300 border border-white/5 hover:border-white/10 shadow-lg">
+            <Github className="w-4 h-4" />
+          </a>
+          <a href="#" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-all duration-300 border border-white/5 hover:border-white/10 shadow-lg">
+            <Linkedin className="w-4 h-4" />
+          </a>
+          <a href="https://cardioai.vercel.app/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-slate-900/40 hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-200 transition-all duration-300 border border-white/5 hover:border-white/10 shadow-lg" title="CardioPredict AI">
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="flex items-center gap-2 text-slate-300">
+            <Brain className="w-4 h-4" />
+            <span className="text-base font-bold tracking-tight">NeuralScan AI</span>
+          </div>
+          <div className="text-slate-400 text-sm flex items-center gap-1.5 mt-1">
+            Engineered with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by <a href="https://github.com/jaypatel342005" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-white transition-colors">Jay Patel</a>
+          </div>
+        </div>
+
+        <div className="text-slate-500 text-xs flex flex-col items-center gap-1 mt-2">
+          <p className="tracking-widest font-semibold uppercase">&copy; {new Date().getFullYear()} ALL RIGHTS RESERVED</p>
+          <p className="text-[10px] text-slate-600">Powered by PyTorch, FastAPI, Next.js, and Tailwind CSS.</p>
+        </div>
       </footer>
     </div>
   );

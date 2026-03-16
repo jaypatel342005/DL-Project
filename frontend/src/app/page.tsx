@@ -575,18 +575,17 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-2 text-slate-300">
+        
+          <div className="text-slate-400 text-sm flex items-center gap-1.5 mt-1">
             <Brain className="w-4 h-4" />
             <span className="text-base font-bold tracking-tight">NeuralScan AI</span>
-          </div>
-          <div className="text-slate-400 text-sm flex items-center gap-1.5 mt-1">
             Engineered with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by <a href="https://github.com/jaypatel342005" target="_blank" rel="noopener noreferrer" className="font-semibold text-slate-300 hover:text-white transition-colors">Jay Patel</a>
           </div>
         </div>
 
         <div className="text-slate-500 text-xs flex flex-col items-center gap-1 mt-2">
           <p className="tracking-widest font-semibold uppercase">&copy; {new Date().getFullYear()} ALL RIGHTS RESERVED</p>
-          <p className="text-[10px] text-slate-600">Powered by PyTorch, FastAPI, Next.js, and Tailwind CSS.</p>
+          <p className="text-[10px] text-slate-600">Powered by PyTorch and Next.js.</p>
         </div>
       </footer>
     </div>

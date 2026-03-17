@@ -21,7 +21,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 CLASSES = ["notumor", "glioma", "meningioma", "pituitary"]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "brain_tumor_effv2s_final.pth")
+MODEL_PATH = os.path.join(BASE_DIR, "best_model.pth")
 
 # Global model variable
 model_ft = None
@@ -55,7 +55,11 @@ def load_model():
     
     # Load weights
     try:
-        model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
+        checkpoint = torch.load(MODEL_PATH, map_location=device, weights_only=False)
+        if isinstance(checkpoint, dict) and "state_dict" in checkpoint:
+            model.load_state_dict(checkpoint["state_dict"])
+        else:
+            model.load_state_dict(checkpoint)
         model = model.to(device)
         model.eval()
         logger.info("Model loaded successfully.")

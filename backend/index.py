@@ -21,7 +21,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 CLASSES = ["notumor", "glioma", "meningioma", "pituitary"]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "best_model.pth")
+MODEL_PATH = os.path.join(BASE_DIR, "brain_tumor_effv2s_final.pth")
 
 # Global model variable
 model_ft = None
@@ -42,11 +42,11 @@ def load_model():
     logger.info(f"Loading model from {MODEL_PATH} on {device}...")
     
     # Model definition matching training setup
-    model = models.resnet18(weights=None)
-    num_ftrs = model.fc.in_features
+    model = models.efficientnet_v2_s(weights=None)
+    num_ftrs = model.classifier[1].in_features
     
     # Custom FC layer
-    model.fc = nn.Sequential(
+    model.classifier = nn.Sequential(
         nn.Linear(num_ftrs, 512),
         nn.ReLU(),
         nn.Dropout(0.5),

@@ -12,7 +12,7 @@ export const analyzeScanImage = async (file: File): Promise<PredictionResult> =>
 
   try {
     // Determine the API URL based on environment
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/predict';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://brain-tumor-predictior.onrender.com/predict';
     
     // Set a timeout for the fetch request
     const controller = new AbortController();

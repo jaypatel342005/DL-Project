@@ -5,17 +5,26 @@ import { motion, type Variants } from "framer-motion";
 import {
   Brain, Zap, Upload, BarChart3, ChevronRight,
   Cpu, Database, ShieldAlert, AlertTriangle,
-  Layers, Network, Microscope, Github, BookOpen
+  Layers, Network, Microscope, Github, BookOpen,
+  Activity, FileWarning, CheckCircle2, Timer,
+  Gauge, Blocks, Focus, GraduationCap, ExternalLink,
+  Scan, FlaskConical
 } from "lucide-react";
 
 import ParticleField from "@/components/ParticleField";
 import StatsCounter from "@/components/StatsCounter";
+import TumorClassCard, { type TumorClass } from "@/components/TumorClassCard";
+import ArchitecturePipeline from "@/components/ArchitecturePipeline";
+
+/* ─── Data ─── */
 
 const stats = [
   { value: 4, label: "Tumor Classes" },
-  { value: 170, label: "EfficientNet Layers" },
+  { value: 24, suffix: "M", label: "Parameters" },
   { value: 384, suffix: "px", label: "Input Size" },
   { value: 98, suffix: "%", label: "Accuracy" },
+  { value: 0.5, suffix: "s", label: "Inference", decimals: 1 },
+  { value: 8, label: "Stages" },
 ];
 
 const steps = [
@@ -30,7 +39,7 @@ const steps = [
     num: "02",
     icon: Cpu,
     title: "AI Analysis",
-    description: "Our fine-tuned EfficientNet-V2-S model normalizes the tensor and runs inference through advanced MBConv layers.",
+    description: "Our fine-tuned EfficientNet-V2-S model normalizes the tensor and runs inference through Fused-MBConv and MBConv layers.",
     color: "blue",
   },
   {
@@ -46,26 +55,101 @@ const features = [
   {
     icon: Layers,
     title: "Transfer Learning",
-    description: "Pre-trained on ImageNet's 1.2M images, then fine-tuned on brain MRI scans for specialized 4-class tumor detection.",
+    description: "Pre-trained on ImageNet-21k's millions of images, then fine-tuned on brain MRI scans for specialized 4-class tumor detection with superior feature representations.",
     accent: "from-cyan-500/20 to-blue-500/20",
   },
   {
     icon: Database,
     title: "Robust Dataset",
-    description: "Trained on thousands of axial, coronal, and sagittal MRI scans spanning Glioma, Meningioma, Pituitary, and No Tumor classes.",
+    description: "Trained on thousands of axial, coronal, and sagittal MRI scans spanning Glioma, Meningioma, Pituitary, and No Tumor classes for comprehensive coverage.",
     accent: "from-blue-500/20 to-violet-500/20",
   },
   {
     icon: Network,
-    title: "Fused-MBConv",
-    description: "EfficientNet-V2-S utilizes advanced Fused-MBConv layers and progressive learning, enabling faster and deeper feature extraction.",
+    title: "Fused-MBConv Blocks",
+    description: "Early stages use Fused-MBConv that merges depthwise and pointwise convolutions into a single 3×3 conv — enabling faster training on modern accelerators.",
     accent: "from-violet-500/20 to-cyan-500/20",
   },
   {
     icon: Microscope,
     title: "Smart Preprocessing",
-    description: "Images are resized to 384×384, normalized with ImageNet mean & std deviation to match the model's training distribution.",
+    description: "Images are resized to 384×384, normalized with ImageNet mean & std deviation to match the model's training distribution for optimal inference.",
     accent: "from-cyan-500/20 to-emerald-500/20",
+  },
+  {
+    icon: Focus,
+    title: "Squeeze-and-Excitation",
+    description: "MBConv blocks integrate SE attention modules that learn channel-wise feature importance, focusing the network on the most discriminative features in MRI scans.",
+    accent: "from-emerald-500/20 to-blue-500/20",
+  },
+  {
+    icon: GraduationCap,
+    title: "Progressive Learning",
+    description: "Training starts with smaller 128px images and weaker regularization, gradually scaling to 384px with stronger augmentation — yielding faster convergence and higher accuracy.",
+    accent: "from-blue-500/20 to-violet-500/20",
+  },
+];
+
+const tumorClasses: TumorClass[] = [
+  {
+    icon: AlertTriangle,
+    title: "Glioma",
+    description: "Arises from glial cells — the supportive tissue of the brain. Most common primary brain tumors, ranging from low-grade to highly malignant glioblastoma (GBM).",
+    severity: "high",
+    gradient: "from-red-500/20 to-orange-500/20",
+    borderColor: "border-red-500/20",
+    iconColor: "text-red-400",
+    stats: [
+      { label: "Origin", value: "Glial Cells" },
+      { label: "Growth", value: "Infiltrative" },
+      { label: "Prevalence", value: "~30%  of brain tumors" },
+      { label: "Subtypes", value: "Astrocytoma, GBM" },
+    ],
+  },
+  {
+    icon: FileWarning,
+    title: "Meningioma",
+    description: "Develops from the meninges — protective membranes surrounding the brain and spinal cord. Typically slow-growing and often benign, but may compress adjacent structures.",
+    severity: "medium",
+    gradient: "from-amber-500/20 to-yellow-500/20",
+    borderColor: "border-amber-500/20",
+    iconColor: "text-amber-400",
+    stats: [
+      { label: "Origin", value: "Meninges" },
+      { label: "Growth", value: "Slow-growing" },
+      { label: "Prevalence", value: "~37%  of brain tumors" },
+      { label: "Prognosis", value: "Generally good" },
+    ],
+  },
+  {
+    icon: Activity,
+    title: "Pituitary Tumor",
+    description: "Grows in the pituitary gland at the base of the brain. Often affects hormone production, potentially causing vision problems and endocrine system disruption.",
+    severity: "medium",
+    gradient: "from-violet-500/20 to-purple-500/20",
+    borderColor: "border-violet-500/20",
+    iconColor: "text-violet-400",
+    stats: [
+      { label: "Origin", value: "Pituitary Gland" },
+      { label: "Growth", value: "Variable" },
+      { label: "Prevalence", value: "~15%  of brain tumors" },
+      { label: "Effects", value: "Hormonal changes" },
+    ],
+  },
+  {
+    icon: CheckCircle2,
+    title: "No Tumor",
+    description: "Healthy brain scan with no anomalous growths detected. The neural network identifies normal brain tissue patterns and confirms the absence of pathological formations.",
+    severity: "none",
+    gradient: "from-emerald-500/20 to-green-500/20",
+    borderColor: "border-emerald-500/20",
+    iconColor: "text-emerald-400",
+    stats: [
+      { label: "Status", value: "Healthy" },
+      { label: "Action", value: "Routine follow-up" },
+      { label: "Confidence", value: "Softmax output" },
+      { label: "Verification", value: "Always advised" },
+    ],
   },
 ];
 
@@ -81,6 +165,8 @@ const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
+
+/* ─── Component ─── */
 
 export default function Home() {
   return (
@@ -105,20 +191,22 @@ export default function Home() {
               className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs sm:text-sm font-medium"
             >
               <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(6,182,212,0.8)]" />
-              Powered by Deep Learning
+              Powered by EfficientNet-V2-S · 24M Parameters
             </motion.div>
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
               <span className="text-slate-100">Detecting</span>{" "}
-              <span className="gradient-text">Brain Tumors</span>
+              <span className="gradient-text text-glow">Brain Tumors</span>
               <br />
               <span className="text-slate-100">with Neural Precision</span>
             </h1>
 
             <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
               An end-to-end AI pipeline engineered to classify brain MRI scans across 4 categories 
-              using a fine-tuned EfficientNet-V2-S architecture.
+              using a fine-tuned <strong className="text-slate-300">EfficientNet-V2-S</strong> architecture with{" "}
+              <strong className="text-slate-300">Fused-MBConv</strong> blocks and{" "}
+              <strong className="text-slate-300">progressive learning</strong>.
             </p>
 
             {/* CTA Buttons */}
@@ -174,7 +262,7 @@ export default function Home() {
 
       {/* ─── Stats ─── */}
       <section className="relative py-12 sm:py-16 border-y border-white/5 bg-slate-950/30">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <StatsCounter stats={stats} />
         </div>
       </section>
@@ -232,8 +320,38 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Model Architecture Features ─── */}
+      {/* ─── Tumor Classes ─── */}
       <section className="relative py-20 sm:py-28 bg-slate-950/40 border-y border-white/5">
+        <div className="hero-glow top-1/4 right-0 opacity-20" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center mb-16"
+          >
+            <motion.span variants={itemVariants} className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3 block">
+              Classification
+            </motion.span>
+            <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-100 mb-4">
+              What We Detect
+            </motion.h2>
+            <motion.p variants={itemVariants} className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg font-light">
+              Our model classifies brain MRI scans into 4 distinct categories. Learn about each tumor type, its origin, and clinical significance.
+            </motion.p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            {tumorClasses.map((tumor, i) => (
+              <TumorClassCard key={tumor.title} tumor={tumor} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Model Architecture Features ─── */}
+      <section className="relative py-20 sm:py-28 overflow-hidden">
         <div className="hero-glow bottom-0 right-0 opacity-20" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -250,7 +368,7 @@ export default function Home() {
               Under the Hood
             </motion.h2>
             <motion.p variants={itemVariants} className="text-slate-400 max-w-xl mx-auto text-base sm:text-lg font-light">
-              A deep dive into the EfficientNet-V2-S model powering NeuralScan.AI.
+              A deep dive into the EfficientNet-V2-S model powering NeuralScan.AI — built with training-aware NAS and progressive learning.
             </motion.p>
           </motion.div>
 
@@ -259,7 +377,7 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6"
           >
             {features.map((feature, i) => (
               <motion.div
@@ -302,8 +420,119 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── Architecture Pipeline ─── */}
+      <section className="relative py-20 sm:py-28 bg-slate-950/40 border-y border-white/5 overflow-hidden">
+        <div className="hero-glow top-0 left-1/3 opacity-20" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center mb-12"
+          >
+            <motion.span variants={itemVariants} className="text-cyan-400 text-sm font-semibold uppercase tracking-widest mb-3 block">
+              Pipeline
+            </motion.span>
+            <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-100 mb-4">
+              Stage-by-Stage Architecture
+            </motion.h2>
+            <motion.p variants={itemVariants} className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg font-light">
+              Visualize the EfficientNet-V2-S inference pipeline — from input convolution through Fused-MBConv and MBConv stages to final classification.
+            </motion.p>
+          </motion.div>
+
+          <ArchitecturePipeline />
+
+          {/* Key architecture facts */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10"
+          >
+            {[
+              { icon: Blocks, label: "Only 3×3 Filters", detail: "No 5×5 convolutions — faster on modern accelerators" },
+              { icon: Gauge, label: "Training-Aware NAS", detail: "Architecture discovered via neural architecture search optimizing both accuracy and training speed" },
+              { icon: Timer, label: "5× Faster Training", detail: "Up to 5× faster training than EfficientNet-V1 while achieving better accuracy on ImageNet" },
+            ].map((fact, i) => (
+              <motion.div
+                key={i}
+                variants={itemVariants}
+                className="glass-card rounded-xl p-5 flex items-start gap-3"
+              >
+                <fact.icon className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-sm font-semibold text-slate-200 mb-1">{fact.label}</h4>
+                  <p className="text-xs text-slate-500 font-light leading-relaxed">{fact.detail}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ─── Research Paper Reference ─── */}
+      <section className="relative py-16 sm:py-20 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="gradient-border rounded-2xl overflow-hidden"
+          >
+            <div className="p-6 sm:p-8 relative z-10">
+              <div className="flex flex-col sm:flex-row items-start gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0">
+                  <FlaskConical className="w-7 h-7 text-violet-400" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 font-semibold uppercase tracking-wider">
+                      Research Paper
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-100 mb-2">
+                    EfficientNetV2: Smaller Models and Faster Training
+                  </h3>
+                  <p className="text-sm text-slate-400 mb-1">
+                    <strong className="text-slate-300">Mingxing Tan & Quoc V. Le</strong> — Google Research, Brain Team
+                  </p>
+                  <p className="text-xs text-slate-500 mb-4 font-light leading-relaxed">
+                    Published at ICML 2021. Introduces training-aware NAS, progressive learning, and the Fused-MBConv block — achieving 
+                    state-of-the-art accuracy on ImageNet while training up to 11× faster than previous models.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <a
+                      href="https://arxiv.org/abs/2104.00298"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 text-violet-300 rounded-lg text-xs font-medium transition-all duration-300 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Read on arXiv
+                    </a>
+                    <a
+                      href="https://github.com/google/automl/tree/master/efficientnetv2"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/60 hover:bg-slate-700/60 border border-white/10 text-slate-300 rounded-lg text-xs font-medium transition-all duration-300"
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                      Official Code
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ─── Warnings & Disclaimer ─── */}
-      <section className="relative py-20 sm:py-28">
+      <section className="relative py-20 sm:py-28 bg-slate-950/40 border-y border-white/5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={containerVariants}
@@ -350,7 +579,7 @@ export default function Home() {
       </section>
 
       {/* ─── Final CTA ─── */}
-      <section className="relative py-20 sm:py-28 border-t border-white/5 bg-slate-950/40 overflow-hidden">
+      <section className="relative py-20 sm:py-28 overflow-hidden">
         <div className="hero-glow top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-40" />
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -364,7 +593,7 @@ export default function Home() {
               Ready to Analyze?
             </h2>
             <p className="text-slate-400 text-base sm:text-lg mb-8 font-light max-w-lg mx-auto">
-              Upload your brain MRI scan and let our EfficientNet-V2-S model provide instant classification results.
+              Upload your brain MRI scan and let our EfficientNet-V2-S model provide instant classification results with confidence scores.
             </p>
             <Link
               href="/analyzer"

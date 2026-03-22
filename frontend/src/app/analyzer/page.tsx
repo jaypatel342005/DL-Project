@@ -5,11 +5,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   UploadCloud, Loader2, Brain,
   Activity, FileWarning, Microscope, Database, Network,
-  Info, Download, ChevronRight, AlertTriangle, CheckCircle2
+  Info, Download, ChevronRight, AlertTriangle, CheckCircle2,
+  Cpu, Layers, Gauge, Focus
 } from "lucide-react";
 
 import { analyzeScanImage, PredictionResult } from "@/utils/api";
 import { ResultCard } from "@/components/ResultCard";
+
+const modelSpecs = [
+  { label: "Architecture", value: "EfficientNet-V2-S" },
+  { label: "Parameters", value: "24M" },
+  { label: "Input Resolution", value: "384 × 384" },
+  { label: "Pretrained", value: "ImageNet-21k" },
+  { label: "Block Types", value: "Fused-MBConv + MBConv" },
+  { label: "Stages", value: "8 (Conv → FC)" },
+];
+
+const tumorClasses = [
+  { name: "Glioma", color: "text-red-400", dot: "bg-red-400" },
+  { name: "Meningioma", color: "text-amber-400", dot: "bg-amber-400" },
+  { name: "Pituitary", color: "text-violet-400", dot: "bg-violet-400" },
+  { name: "No Tumor", color: "text-emerald-400", dot: "bg-emerald-400" },
+];
 
 export default function AnalyzerPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -18,6 +35,7 @@ export default function AnalyzerPage() {
   const [result, setResult] = useState<PredictionResult | null>(null);
   const [isDragActive, setIsDragActive] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showModelInfo, setShowModelInfo] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -107,7 +125,7 @@ export default function AnalyzerPage() {
 
         {/* Main Layout */}
         <div className="flex flex-col xl:flex-row gap-6 items-stretch">
-          {/* Left: Upload Panel */}
+          {/* Left: Upload Panel + Model Info */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -240,6 +258,62 @@ export default function AnalyzerPage() {
                 )}
               </motion.button>
             </div>
+
+            {/* Model Info Panel */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="glass-card rounded-2xl overflow-hidden"
+            >
+              <button
+                onClick={() => setShowModelInfo(!showModelInfo)}
+                className="w-full flex items-center justify-between px-5 py-4 text-sm font-medium text-slate-300 hover:text-white transition-colors"
+              >
+                <span className="flex items-center gap-2">
+                  <Cpu className="w-4 h-4 text-cyan-400" />
+                  Model Specifications
+                </span>
+                <ChevronRight className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${showModelInfo ? "rotate-90" : ""}`} />
+              </button>
+
+              <AnimatePresence>
+                {showModelInfo && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-5 pb-5 border-t border-white/5 pt-4">
+                      {/* Model specs grid */}
+                      <div className="grid grid-cols-2 gap-2 mb-4">
+                        {modelSpecs.map((spec) => (
+                          <div key={spec.label} className="bg-black/20 rounded-lg px-3 py-2 border border-white/5">
+                            <div className="text-[9px] text-slate-500 uppercase tracking-wider mb-0.5">{spec.label}</div>
+                            <div className="text-xs font-semibold text-slate-200">{spec.value}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Output classes */}
+                      <div className="bg-black/20 rounded-lg px-3 py-3 border border-white/5">
+                        <div className="text-[9px] text-slate-500 uppercase tracking-wider mb-2">Output Classes</div>
+                        <div className="flex flex-wrap gap-2">
+                          {tumorClasses.map((cls) => (
+                            <span key={cls.name} className={`inline-flex items-center gap-1.5 text-[10px] font-medium ${cls.color}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${cls.dot}`} />
+                              {cls.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           </motion.div>
 
           {/* Right: Results Panel */}
@@ -300,16 +374,22 @@ export default function AnalyzerPage() {
                       <h3 className="text-2xl font-light text-cyan-300 mb-3 tracking-wide">
                         Processing Inference
                       </h3>
-                      <div className="space-y-2 mt-4 text-xs font-mono text-cyan-400/60 text-left w-52 bg-black/20 p-3 rounded-lg border border-cyan-500/10">
-                        <p className="animate-pulse">{">"} Activating Node...</p>
-                        <p className="animate-pulse" style={{ animationDelay: "0.5s" }}>
-                          {">"} Normalizing Tensor...
+                      <div className="space-y-2 mt-4 text-xs font-mono text-cyan-400/60 text-left w-64 bg-black/20 p-3 rounded-lg border border-cyan-500/10">
+                        <p className="animate-pulse">{">"} Resizing input to 384×384...</p>
+                        <p className="animate-pulse" style={{ animationDelay: "0.3s" }}>
+                          {">"} Normalizing with ImageNet stats...
                         </p>
-                        <p className="animate-pulse" style={{ animationDelay: "1s" }}>
-                          {">"} Feeding EfficientNet Layers...
+                        <p className="animate-pulse" style={{ animationDelay: "0.6s" }}>
+                          {">"} Running Fused-MBConv stages 1–3...
+                        </p>
+                        <p className="animate-pulse" style={{ animationDelay: "0.9s" }}>
+                          {">"} Running MBConv+SE stages 4–6...
+                        </p>
+                        <p className="animate-pulse" style={{ animationDelay: "1.2s" }}>
+                          {">"} Global Avg Pooling → FC layer...
                         </p>
                         <p className="animate-pulse" style={{ animationDelay: "1.5s" }}>
-                          {">"} Computing Softmax...
+                          {">"} Computing Softmax probabilities...
                         </p>
                       </div>
                     </motion.div>

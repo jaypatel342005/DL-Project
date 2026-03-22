@@ -16,7 +16,7 @@ export const analyzeScanImage = async (file: File): Promise<PredictionResult> =>
     
     // Set a timeout for the fetch request
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 30000); 
 
     const response = await fetch(apiUrl, {
       method: "POST",
